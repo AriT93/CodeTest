@@ -59,7 +59,7 @@ class Terminal
     #do quantity and sale need to flip?
     if sale.to_f == 0.0
       quantity,sale = sale,quantity
-      quantity = word_to_number(quantity)
+      quantity = word_to_number(quantity.strip)
     end
     { :price => amount.to_f, :deal => discount, :quantity => quantity.to_i, :sale => sale.to_f, :string => price}
   end
