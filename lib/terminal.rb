@@ -20,12 +20,11 @@ class Terminal
     items.each do |item|
       pieces = @cart.count(item)
       product = @products[item]
-
       if pieces > 1 then
         if product[:deal] then
           case
           when pieces == product[:quantity]
-            retval += product[:sale]
+            retval += product[:deal] ? product[:sale] : product[:price]
           when  pieces > product[:quantity]
             if (pieces % product[:quantity]) != 0 then
               retval += product[:price] * (pieces % product[:quantity])
@@ -36,6 +35,8 @@ class Terminal
           when  pieces < product[:quantity].to_i
             retval +=  product[:price] * pieces
           end
+        else
+          retval +=  product[:price]  * pieces
         end
       else
         retval +=  product[:price]
@@ -55,11 +56,13 @@ class Terminal
       amount,deal = price.split(' or ')
       amount.gsub!('$','')
       quantity,sale = deal.match(/(\d+).*for.*\$?(\d+\.\d+|\s\w+\s)/).to_a[1..2]
-    end
-    #do quantity and sale need to flip?
-    if sale.to_f == 0.0
-      quantity,sale = sale,quantity
-      quantity = word_to_number(quantity.strip)
+      #do quantity and sale need to flip?
+      if sale.to_f == 0.0
+        quantity,sale = sale,quantity
+        quantity = word_to_number(quantity.strip)
+      end
+    else
+      amount = price.gsub('$','').strip.to_f
     end
     { :price => amount.to_f, :deal => discount, :quantity => quantity.to_i, :sale => sale.to_f, :string => price}
   end
