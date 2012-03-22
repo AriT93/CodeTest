@@ -5,27 +5,55 @@ class Terminal
     @cart = Array.new()
   end
   def scan_price(product, price)
-    @products[product]=[price, price.include?(' or ')]
+    @products[product]=parse_price price
   end
   def scan(product)
     #add product to the cart
     @cart.push product
   end
   def price(product)
-    return @products[product][0]
+    return @products[product][:string]
   end
   def total
     items = @cart.uniq
     retval = 0.00
-    if @cart.count(items[0]) > 1 then
-      if @products[itmes[0]][2] then
-        #get the deal
-        #compare if eligble
+    pieces = @cart.count(items[0])
+    product = @products[items[0]]
 
+    if pieces > 1 then
+      if product[:deal] then
+        case
+        when pieces == product[:quantity]
+          retval += product[:sale]
+        when  pieces > product[:quantity]
+          if (pieces % product[:quantity]) != 0 then
+            retval += product[:price] * (pieces % product[:quantity])
+            retval += product[:sale]
+          elsif  (pieces % product[:quantity].to_i) == 0
+            retval += product[:sale] * (pieces / product[:quantity])
+          end
+        when  pieces < product[:quantity].to_i
+           retval +=  product[:price] * pieces
+        end
       end
     else
-      retval += @products[items[0]][0].gsub('$','').match(/\d+\.\d+/).to_s.to_f
+      retval +=  product[:price]
     end
-    return retval
+     return retval
+  end
+
+  private
+  def parse_price(price)
+    discount = price.include?(' or ')
+    amount = 0.00
+    deal = ""
+    quantity = 0
+    sale = 0.00
+    if discount
+      amount,deal = price.split(' or ')
+      amount.gsub!('$','')
+      quantity,sale = deal.match(/(\d+).*for.*\$?(\d+\.\d+)/).to_a[1..2]
+    end
+    { :price => amount.to_f, :deal => discount, :quantity => quantity.to_i, :sale => sale.to_f, :string => price}
   end
 end
