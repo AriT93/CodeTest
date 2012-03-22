@@ -3,13 +3,11 @@ require 'spec_helper'
 describe "Terminal" do
   before (:each) do
     @term = Terminal.new
-    @term.scan_price('A',"$2.00 or 4 for $7.00")
-    @term.scan_price('C',"$1.25 or $6 for a six pack")
-    @term.scan_price('B', "$12.00")
-    @term.scan_price('D', "$0.15")
+    prices = [['A',"$2.00 or 4 for $7.00"],['C',"$1.25 or $6 for a six pack"],['B', "$12.00"],['D', "$0.15"]]
+    @term.set_pricing(prices)
   end
-  it "Terminal should recieve a scan_price method" do
-    Terminal.instance_methods.include?(:scan_price).should == true
+  it "Terminal should recieve a set_pricing method" do
+    Terminal.instance_methods.include?(:set_pricing).should == true
   end
   it "Terminal should recieve a scan method" do
     Terminal.instance_methods.include?(:scan).should == true
@@ -61,11 +59,9 @@ describe "Terminal" do
   end
   context "test the given examples" do
     before (:each) do
+      prices = [['A',"$2.00 or 4 for $7.00"],['C',"$1.25 or $6 for a six pack"],['B', "$12.00"],['D', "$0.15"]]
       @term = Terminal.new
-      @term.scan_price('A',"$2.00 or 4 for $7.00")
-      @term.scan_price('B', "$12.00")
-      @term.scan_price('C',"$1.25 or $6 for a six pack")
-      @term.scan_price('D', "$0.15")
+      @term.set_pricing(prices)
     end
 
     it "should return a price of 32.40 for ABCDABAA" do
