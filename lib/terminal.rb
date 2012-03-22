@@ -23,7 +23,7 @@ class Terminal
       if product[:deal] then
         case
         when pieces == product[:quantity]
-          retval += product[:deal] ? product[:sale] : product[:price]
+          retval += product[:sale]
         when  pieces > product[:quantity]
           if (pieces % product[:quantity]) != 0 then
             retval += product[:price] * (pieces % product[:quantity])
