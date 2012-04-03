@@ -41,11 +41,11 @@ describe "Terminal" do
     3.times { @term.scan('A')}
     @term.total.should == 6.00
   end
-  it "should return a total of 1.25 for a cart of 1 B" do
+  it "should return a total of 1.25 for a cart of 1 C" do
     @term.scan('C')
     @term.total.should == 1.25
   end
-  it "should return a price of 6.00 for a six pack of B" do
+  it "should return a price of 6.00 for a six pack of C" do
     6.times{ @term.scan('C')}
     @term.total.should == 6.00
   end
